@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 th:text="${account.username}'\'s + 'Profile'"></h1>
+<ul th:each="post : account.userPosts">
+    <li th:text="${post.content}"></li>
+</ul>
+<form action="/create-post" method="post">
+    <fieldset>
+        <legend>Create New Post</legend>
+        <input type="textarea" name="content">
+        <input type="hidden" name="username" th:value="${account.username}">
+        <input type="submit" value="Add">
+    </fieldset>
+</form>
+</body>
+</html>
