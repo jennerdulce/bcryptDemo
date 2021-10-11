@@ -5,12 +5,13 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.List;
 
+// Tell to hibernate into JPA "please go make this table"
 @Entity
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Lob
+//  @Lob: Use for bigger files
     @Type(type = "org.hibernate.type.TextType")
     public String username;
     public String password;
