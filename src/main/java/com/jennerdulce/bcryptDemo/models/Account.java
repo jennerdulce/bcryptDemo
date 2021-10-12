@@ -20,7 +20,7 @@ public class Account {
 
     }
 
-    @OneToMany(mappedBy = "myAccount")
+    @OneToMany(mappedBy= "myAccount", cascade = CascadeType.ALL)
     List<Post> usersPosts;
 
     public Account(String username, String password){
