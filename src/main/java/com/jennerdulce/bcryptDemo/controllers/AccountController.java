@@ -21,6 +21,8 @@ public class AccountController {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
     PostRepository postRepository;
 
     @GetMapping("/")
@@ -36,20 +38,21 @@ public class AccountController {
     @GetMapping("/user/{userName}")
     public String userProfile(Model m, @PathVariable String userName) {
         Account accountFromDb = accountRepository.findByUsername(userName);
-        m.addAttribute("account", accountFromDb);
+        m.addAttribute("username", accountFromDb.getUsername());
+        m.addAttribute("posts", accountFromDb.getUsersPosts());
         return "/posts.html";
     }
 
-    @PostMapping("/login")
-    public RedirectView addPost(String username, String password) {
-        Account accountFromDb = accountRepository.findByUsername(username);
-        if ((accountFromDb == null) || (!BCrypt.checkpw(password, accountFromDb.password))) {
-            return new RedirectView("/login");
-        }
-        String route = "/user/" + username;
-        // Will hit the "/" route which renders the posts.html
-        return new RedirectView(route);
-    }
+//    @PostMapping("/login")
+//    public RedirectView addPost(String username, String password) {
+//        Account accountFromDb = accountRepository.findByUsername(username);
+//        if ((accountFromDb == null) || (!BCrypt.checkpw(password, accountFromDb.password))) {
+//            return new RedirectView("/login");
+//        }
+//        String route = "/user/" + username;
+//        // Will hit the "/" route which renders the posts.html
+//        return new RedirectView(route);
+//    }
 
     @GetMapping("/signup")
     public String getSignupPage() {
@@ -79,14 +82,14 @@ public class AccountController {
     @PostMapping("/create-post")
     public RedirectView createPost(String username, String content) {
         Account currentAccount = accountRepository.findByUsername(username);
-        Post newPost = new Post(content);
+        Post newPost = new Post(content, currentAccount);
         List<Post> posts = currentAccount.getUsersPosts();
         if(posts == null){
             posts = new ArrayList<>();
         }
         posts.add(newPost);
         accountRepository.save(currentAccount);
-        postRepository.save(newPost);
-        return new RedirectView("/login");
+        String route = "/user/" + username;
+        return new RedirectView(route);
     }
 }
